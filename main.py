@@ -1,10 +1,9 @@
-
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from email_validator import validate_email, EmailNotValidError
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'  # Replace with your own secret key
+app.secret_key = 'your_secret_key_here'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///grants.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -17,7 +16,6 @@ class GrantRequest(db.Model):
     reason = db.Column(db.Text)
     approved = db.Column(db.Boolean, default=False)
 
-# ✅ Create tables safely on startup
 with app.app_context():
     db.create_all()
 
@@ -27,9 +25,12 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    name = request.form['name']
-    email = request.form['email']
-    reason = request.form['reason']
+    contact = request.form['contact']
+    amount = request.form['amount']
+
+    name = contact  # assuming contact = name or email
+    email = contact
+    reason = f"Requested Grant Amount: ${amount}"
 
     try:
         validate_email(email)

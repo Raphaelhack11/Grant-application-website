@@ -1,8 +1,10 @@
+
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from email_validator import validate_email, EmailNotValidError
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = 'your_secret_key_here'  # Replace with your own secret key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///grants.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -10,33 +12,45 @@ db = SQLAlchemy(app)
 
 class GrantRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    contact = db.Column(db.String(200), nullable=False)
-    amount = db.Column(db.Integer, nullable=False)
-    method = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(100), unique=True)
+    reason = db.Column(db.Text)
     approved = db.Column(db.Boolean, default=False)
 
-@app.before_first_request
-def create_tables():
+# ✅ Create tables safely on startup
+with app.app_context():
     db.create_all()
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/apply', methods=['POST'])
-def apply():
-    contact = request.form['contact']
-    amount = request.form['amount']
-    method = request.form['method']
-    new_request = GrantRequest(contact=contact, amount=amount, method=method)
-    db.session.add(new_request)
+@app.route('/submit', methods=['POST'])
+def submit():
+    name = request.form['name']
+    email = request.form['email']
+    reason = request.form['reason']
+
+    try:
+        validate_email(email)
+    except EmailNotValidError:
+        flash('Invalid email address.', 'error')
+        return redirect(url_for('index'))
+
+    existing_user = GrantRequest.query.filter_by(email=email).first()
+    if existing_user:
+        flash('Email already submitted.', 'error')
+        return redirect(url_for('index'))
+
+    grant = GrantRequest(name=name, email=email, reason=reason)
+    db.session.add(grant)
     db.session.commit()
     return redirect(url_for('thank_you'))
 
 @app.route('/admin')
 def admin():
-    requests = GrantRequest.query.all()
-    return render_template('admin.html', requests=requests)
+    grants = GrantRequest.query.all()
+    return render_template('admin.html', grants=grants)
 
 @app.route('/approve/<int:id>')
 def approve(id):

